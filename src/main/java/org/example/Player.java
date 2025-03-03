@@ -13,18 +13,14 @@ public class Player {
         score = 0;
     }
 
-    /**
-     * Constructor that takes in all member variables as parameters
-     **/
+    /** Constructor that takes in all member variables as parameter **/
 
     Player(String name, int score) {
         this.name = name;
         this.score = score;
     }
 
-    /**
-     *  Deep copy contructor
-     *  **/
+    /** Deep copy contructor **/
     Player(Player other) {
         this.name = other.name;
         this.score = other.score;
@@ -62,6 +58,11 @@ public class Player {
         Player p = (Player) o;
         return this.name.equals(p.name);
     }
+
+
+
+
+
 
 
 }
