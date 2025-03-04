@@ -19,12 +19,17 @@ public class PQHeap implements PriorityQueue{
 
     /** Deep Copy Constructor **/
     public PQHeap(PQHeap other) {
-        value = other.value;
-        priority = other.priority;
+        this.heap = new Player[other.heap.length];
+       this.size = other.size;
+
+       /** This copies all the Player objects from the other.heap to this.heap **/
+       for(int i = 0; i < this.heap.length; i++){
+           this.heap[i] = new Player(other.heap[i]);
+       }
     }
 
 
-    /** PQ Heap CreateClone method**/
+    /** PQ Heap CreateClone method: creates a deep copy of the current instance. **/
     public PQHeap createClone() {
         return new PQHeap(this);
     }
@@ -57,8 +62,11 @@ public class PQHeap implements PriorityQueue{
             heap = temp;
         }
 
-        /** Assign the new player at the end of the heap. **/
+
+
+        /** Add the new player to the heap **/
         heap[size] = a;
+
 
 
         int index = size - 1; // The newly inserted element
@@ -76,12 +84,61 @@ public class PQHeap implements PriorityQueue{
     };
 
     public  Player getHighestScorePlayer() {
+        if(size == 0 ) {
+            return null;
+        }
 
 
-        return null;
+
+        Player topScore = heap[0];
+        heap[0] = heap[size - 1]; // Move last element to root
+        size --;
+
+        int index = 0;
+
+        if(size == 0) {
+            return topScore;
+        }
+
+        while(true) {
+            // Check if left child exists and has a greater score
+            int leftChildIndex = getLeftChildIndex(index);
+            int rightChildIndex = getRightChildIndex(index);
+            int largest = index;
+
+            /** this condition checks if the left child exists and has a greater score**/
+            if (leftChildIndex < size && heap[leftChildIndex].getScore() > heap[largest].getScore()) {
+                largest = leftChildIndex;
+            }
+
+            /** this condition checks if the right child exists and has a greater score than the current largest score**/
+            if (rightChildIndex < size && heap[rightChildIndex].getScore() > heap[largest].getScore()) {
+                largest = rightChildIndex;
+            }
+
+            // If no swaps are needed, heapify-down is complete
+            if (largest == index) {
+                break;
+            }
+
+
+            // Swap current index with the largest child
+            Player temp = heap[index];
+            heap[index] = heap[largest];
+            heap[largest] = temp;
+
+            // Move index down to continue heapify-down
+            index = largest;
+
+        }
+        return topScore;
+
+
     };
 
-    public void clear() {};
+    public void clear() {
+        size = 0;
+    };
 
     public  int getSize() {
         return size;

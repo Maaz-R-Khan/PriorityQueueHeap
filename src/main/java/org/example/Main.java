@@ -1,15 +1,77 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
+        Player p[];
+        int playerCount = 0;
 
+        try {
+            // Step 1: Read the file to count the number of players
+            Scanner infile = new Scanner(new FileReader("players.txt"));
+
+            while (infile.hasNextLine()) {
+                infile.nextLine(); // Read name
+                if (infile.hasNextLine()) {
+                    infile.nextLine(); // Read score
+                    playerCount++;
+                }
+            }
+            infile.close();
+
+            // Step 2: Create Player array after counting
+            p = new Player[playerCount];
+            PQHeap heap = new PQHeap(playerCount);
+
+            // Step 3: Read players into array & add to heap
+            infile = new Scanner(new FileReader("players.txt"));
+            int index = 0;
+
+            while (infile.hasNextLine()) {
+                String name = infile.nextLine();
+                if (!infile.hasNextLine()) break; // Avoid error if score is missing
+
+                int score = Integer.parseInt(infile.nextLine());
+                p[index] = new Player(name, score); // Store in array
+                heap.add(p[index]); // Add to heap
+                index++;
+            }
+            infile.close();
+
+            // Step 4: Print original players
+            System.out.println("Original Players:");
+            for (Player player : p) {
+                System.out.println(player.getName() + " - " + player.getScore());
+            }
+
+            // Step 5: Sort using heapsort
+            heapsort(p);
+
+            // Step 6: Print sorted players
+            System.out.println("\nSorted Players:");
+            for (Player player : p) {
+                System.out.println(player.getName() + " - " + player.getScore());
+            }
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("File not found: " + e);
+        }
     }
 
     public static void heapsort(Player[] pa) {
+        PQHeap heap = new PQHeap(pa.length);
 
+        // Step 1: Insert all players into the heap
+        for (Player player : pa) {
+            heap.add(player);
+        }
 
-
+        // Step 2: Extract max and store in sorted order
+        for (int i = pa.length - 1; i >= 0; i--) {
+            pa[i] = heap.getHighestScorePlayer();
+        }
     }
 }
