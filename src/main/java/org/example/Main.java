@@ -64,13 +64,13 @@ public class Main {
     public static void heapsort(Player[] pa) {
         PQHeap heap = new PQHeap(pa.length);
 
-        // Step 1: Insert all players into the heap
+
         for (Player player : pa) {
             heap.add(player);
         }
 
-        // Step 2: Extract max and store in sorted order
-        for (int i = pa.length - 1; i >= 0; i--) {
+
+        for (int i = 0; i < pa.length; i++) {
             pa[i] = heap.getHighestScorePlayer();
         }
     }

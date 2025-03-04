@@ -49,57 +49,23 @@ public class PQHeap implements PriorityQueue{
         return (2 * index) + 2;
     }
 
+    //The swap method swaps the left child with parent.
+    private void swap(int index1, int index2) {
+        Player temp = heap[index1];
+       heap[index1] = heap[index2];
+        heap[index2] = temp;
+    }
 
-    public void add(Player a) {
-
-        /** if the heap is full,
-         * create a new array
-         * and copy the array's data over into the temp array
-         **/
-        if(size == heap.length) {
-            Player [] temp = new Player[heap.length * 2];
-            System.arraycopy(heap, 0, temp, 0, heap.length);
-            heap = temp;
-        }
-
-
-
-        /** Add the new player to the heap **/
-        heap[size] = a;
-
-
-
-        int index = size - 1; // The newly inserted element
-        while (index > 0 && heap[index].getScore() > heap[getParentIndex(index)].getScore()) {
-            int parentIndex = getParentIndex(index);
-
-            Player temp = heap[index];
-            heap[index] = heap[parentIndex];
-            heap[parentIndex] = temp;
-
-            // Move up the heap
+    private void heapifyUp(int index) {
+        int parentIndex = getParentIndex(index);
+        while (index > 0 && heap[index].getScore() > heap[parentIndex].getScore()) {
+            swap(index, parentIndex);
             index = parentIndex;
+            parentIndex = getParentIndex(index);
         }
-        size++;
-    };
+    }
 
-    public  Player getHighestScorePlayer() {
-        if(size == 0 ) {
-            return null;
-        }
-
-
-
-        Player topScore = heap[0];
-        heap[0] = heap[size - 1]; // Move last element to root
-        size --;
-
-        int index = 0;
-
-        if(size == 0) {
-            return topScore;
-        }
-
+    private void heapifyDown(int index) {
         while(true) {
             // Check if left child exists and has a greater score
             int leftChildIndex = getLeftChildIndex(index);
@@ -121,20 +87,48 @@ public class PQHeap implements PriorityQueue{
                 break;
             }
 
-
-            // Swap current index with the largest child
-            Player temp = heap[index];
-            heap[index] = heap[largest];
-            heap[largest] = temp;
+            swap(index, largest);
+            index = largest;
 
             // Move index down to continue heapify-down
             index = largest;
+        }
+    }
 
+
+
+
+    public void add(Player a) {
+        /** if the heap is full,
+         * create a new array
+         * and copy the array's data over into the temp array
+         * This essentially handles any out of bounds errors.
+         **/
+        if(size == heap.length) {
+            Player [] temp = new Player[heap.length * 2];
+            System.arraycopy(heap, 0, temp, 0, heap.length);
+            heap = temp;
+        }
+
+        heap[size] = a;
+        heapifyUp(size);
+        size++;
+    }
+
+    public Player getHighestScorePlayer() {
+        if(size == 0) {
+            return null;
+        }
+
+        Player topScore = heap[0]; // Store highest-scoring player
+        heap[0] = heap[size - 1]; // Move last element to root
+        size--;
+
+        if(size > 0) { // Prevents unnecessary heapifyDown when heap is empty
+            heapifyDown(0); // this restores heap order
         }
         return topScore;
-
-
-    };
+    }
 
     public void clear() {
         size = 0;
