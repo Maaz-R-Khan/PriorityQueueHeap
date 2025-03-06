@@ -4,13 +4,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
+/**
+ * The Main class reads player data from a file, stores them in a heap, and sorts them using heapsort.
+ */
 public class Main {
+    /**
+     * The main method reads player data from "players.txt", stores them in a PQHeap,
+     * and sorts them using heapsort.
+     *
+     * @param args Command-line arguments (not used).
+     */
     public static void main(String[] args) {
         Player p[];
         int playerCount = 0;
 
         try {
-            // Step 1: Read the file to count the number of players
+            //  Read the file to count the number of players
             Scanner infile = new Scanner(new FileReader("players.txt"));
 
             while (infile.hasNextLine()) {
@@ -22,17 +31,17 @@ public class Main {
             }
             infile.close();
 
-            // Step 2: Create Player array after counting
+            //   Create Player array after counting
             p = new Player[playerCount];
             PQHeap heap = new PQHeap(playerCount);
 
-            // Step 3: Read players into array & add to heap
+            // Read players into array & add to heap
             infile = new Scanner(new FileReader("players.txt"));
             int index = 0;
 
             while (infile.hasNextLine()) {
                 String name = infile.nextLine();
-                if (!infile.hasNextLine()) break; // Avoid error if score is missing
+                if (!infile.hasNextLine()) break;
 
                 int score = Integer.parseInt(infile.nextLine());
                 p[index] = new Player(name, score); // Store in array
@@ -41,16 +50,16 @@ public class Main {
             }
             infile.close();
 
-            // Step 4: Print original players
+            // Print original players
             System.out.println("Original Players:");
             for (Player player : p) {
                 System.out.println(player.getName() + " - " + player.getScore());
             }
 
-            // Step 5: Sort using heapsort
+
             heapsort(p);
 
-            // Step 6: Print sorted players
+            // Print the sorted players
             System.out.println("\nSorted Players:");
             for (Player player : p) {
                 System.out.println(player.getName() + " - " + player.getScore());
@@ -61,10 +70,15 @@ public class Main {
         }
     }
 
+    /**
+     * Sorts an array of players using a priority queue heap.
+     *
+     * @param pa The array of Player objects to be sorted.
+     */
     public static void heapsort(Player[] pa) {
         PQHeap heap = new PQHeap(pa.length);
 
-
+        //add each player object to the heap.
         for (Player player : pa) {
             heap.add(player);
         }
